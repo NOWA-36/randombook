@@ -332,6 +332,7 @@ export default function App() {
       border: "1px solid #cbd5e1",
       background: "#fff",
     },
+    body: { margin: 0 },
   };
 
   return (

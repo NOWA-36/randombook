@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://my-book-randomizer-2025.netlify.app/sitemap.xml

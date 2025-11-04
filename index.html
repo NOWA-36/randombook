@@ -1,12 +1,60 @@
-<!doctype html>
-<html lang="ja">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>読みたい本ランダマイザー</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
-</html>
+<!-- index.html -->
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>読みたい本ランダマイザー | 登録した本からランダムで1冊</title>
+  <meta name="description" content="読みたい本を登録して、ボタンひとつでランダムに1冊選べる無料ウェブアプリ。JSONでバックアップ/復元もできます。">
+
+  <!-- Canonical（NetlifyのあなたのURLに変更） -->
+  <link rel="canonical" href="https://my-book-randomizer-2025.netlify.app/">
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="読みたい本ランダマイザー">
+  <meta property="og:title" content="読みたい本ランダマイザー">
+  <meta property="og:description" content="登録した本からランダムで1冊を抽選。">
+  <meta property="og:url" content="https://my-book-randomizer-2025.netlify.app/">
+  <meta property="og:image" content="https://my-book-randomizer-2025.netlify.app/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <!-- 構造化データ（JSON-LD：WebApplication）-->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "読みたい本ランダマイザー",
+    "url": "https://my-book-randomizer-2025.netlify.app/",
+    "description": "読みたい本を登録して、ランダムで1冊を抽選できるウェブアプリ。",
+    "applicationCategory": "Productivity",
+    "operatingSystem": "Web",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "JPY" }
+  }
+  </script>
+  <style>
+  /* 余白リセット＆セーフエリア対応 */
+  html, body, #root { height: 100%; margin: 0; padding: 0; }
+  body { padding-top: env(safe-area-inset-top); }
+</style>
+</head>
+<body>
+  <!-- SEO向けの説明（rootの上でOK） -->
+  <section aria-label="アプリの説明"
+  style="
+    position:absolute;
+    width:1px;
+    height:1px;
+    margin:-1px;
+    padding:0;
+    border:0;
+    overflow:hidden;
+    clip:rect(0 0 0 0);
+    white-space:nowrap;
+  ">
+    読みたい本を登録し、購入/未購入で絞り込んでランダムに1冊を選べる無料の本管理アプリです。
+    ブラウザのローカル保存に対応し、JSONファイルでエクスポート/インポートできます。
+  </section>
+
+  <div id="root"></div>
+  <script type="module" src="/src/main.jsx"></script>
+</body>
