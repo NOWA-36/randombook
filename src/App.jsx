@@ -266,74 +266,73 @@ export default function App() {
 
   // ざっくりCSS（依存なし）
   const styles = {
-    page: { minHeight: "100vh", background: "#f8fafc", padding: "24px" },
-    container: { maxWidth: 960, margin: "0 auto" },
-    card: {
-      background: "#fff",
-      borderRadius: 16,
-      boxShadow: "0 1px 4px rgba(0,0,0,.06)",
-      padding: 16,
-      marginTop: 16,
-    },
-    row: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 },
-    rowFull: { display: "grid", gridTemplateColumns: "1fr", gap: 12 },
-    label: { fontSize: 12, fontWeight: 600 },
-    input: {
-      width: "100%",
-      padding: "8px 10px",
-      borderRadius: 8,
-      border: "1px solid #cbd5e1",
-    },
-    textarea: {
-      width: "100%",
-      padding: "8px 10px",
-      borderRadius: 8,
-      border: "1px solid #cbd5e1",
-      minHeight: 80,
-    },
-    btn: {
-      padding: "8px 12px",
-      borderRadius: 12,
-      border: "1px solid #cbd5e1",
-      background: "#0ea5e9",
-      color: "#fff",
-      cursor: "pointer",
-    },
-    btnGhost: {
-      padding: "8px 12px",
-      borderRadius: 12,
-      border: "1px solid #cbd5e1",
-      background: "#fff",
-      cursor: "pointer",
-    },
-    listItem: { border: "1px solid #e2e8f0", borderRadius: 12, padding: 12 },
-    badge: {
-      background: "#f1f5f9",
-      borderRadius: 999,
-      padding: "2px 8px",
-      fontSize: 12,
-      marginLeft: 8,
-    },
-    tag: { fontSize: 12, color: "#64748b" },
-    actionsRight: { marginLeft: "auto", display: "flex", gap: 8 },
-    tiny: { fontSize: 12, color: "#64748b" },
-    chip: (active) => ({
-      borderRadius: 999,
-      padding: "2px 8px",
-      fontSize: 12,
-      border: "1px solid #cbd5e1",
-      background: active ? "#0ea5e9" : "#fff",
-      color: active ? "#fff" : "#334155",
-      cursor: "default",
-    }),
-    select: {
-      padding: "8px 10px",
-      borderRadius: 8,
-      border: "1px solid #cbd5e1",
-      background: "#fff",
-    },
-    body: { margin: 0 },
-  };
+  page: { minHeight: "100vh", background: "#faf8f1", padding: "24px" },
+  container: { maxWidth: 960, margin: "0 auto" },
+  card: {
+    background: "#fffaf5",
+    borderRadius: 16,
+    boxShadow: "0 1px 4px rgba(0,0,0,.08)",
+    padding: 16,
+    marginTop: 16,
+  },
+  label: { fontSize: 12, fontWeight: 600, color: "#444" },
+  input: {
+    width: "100%",
+    padding: "10px 12px",
+    borderRadius: 8,
+    border: "1px solid #ccc",
+    background: "#fff",
+    fontSize: 15,
+  },
+  textarea: {
+    width: "100%",
+    padding: "10px 12px",
+    borderRadius: 8,
+    border: "1px solid #ccc",
+    background: "#fff",
+    minHeight: 80,
+    fontSize: 15,
+  },
+  btn: {
+    padding: "10px 14px",
+    borderRadius: 12,
+    border: "none",
+    background: "#5b7db1",
+    color: "#fff",
+    fontWeight: 600,
+    cursor: "pointer",
+  },
+  btnGhost: {
+    padding: "10px 14px",
+    borderRadius: 12,
+    border: "1px solid #ccc",
+    background: "#fff",
+    color: "#444",
+    cursor: "pointer",
+  },
+  badge: {
+    background: "#e3edff",
+    borderRadius: 999,
+    padding: "2px 8px",
+    fontSize: 12,
+    color: "#445",
+  },
+  chip: (active) => ({
+    borderRadius: 999,
+    padding: "2px 8px",
+    fontSize: 12,
+    border: "1px solid #ccc",
+    background: active ? "#5b7db1" : "#f4f4f4",
+    color: active ? "#fff" : "#333",
+  }),
+  // ページ全体に追加
+  page: { 
+    minHeight: "100vh", 
+    background: "#faf8f1", 
+    padding: "clamp(16px, 4vw, 32px)", // スマホで自動調整
+  },
+};
+
 
   return (
     <div style={styles.page}>
