@@ -1,3 +1,13 @@
+const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+const colors = {
+  bg: prefersDark ? "#121212" : "#faf8f1",
+  card: prefersDark ? "#1e1e1e" : "#fffaf5",
+  border: prefersDark ? "#333" : "#ddd",
+  text: prefersDark ? "#eaeaea" : "#222",
+  accent: prefersDark ? "#7bb0ff" : "#5b7db1",
+  badge: prefersDark ? "#2f3b55" : "#e3edff",
+};
+
 // App.jsx（購入/未購入フラグ & 抽選モード対応版）
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
@@ -266,12 +276,13 @@ export default function App() {
 
   // ざっくりCSS（依存なし）
   const styles = {
-  page: { minHeight: "100vh", background: "#faf8f1", padding: "24px" },
+   page: { minHeight: "100vh", background: colors.bg, color: colors.text, padding: "24px" },
   container: { maxWidth: 960, margin: "0 auto" },
   card: {
-    background: "#fffaf5",
+    background: colors.card,
     borderRadius: 16,
-    boxShadow: "0 1px 4px rgba(0,0,0,.08)",
+    boxShadow: prefersDark ? "0 1px 4px rgba(255,255,255,.08)" : "0 1px 4px rgba(0,0,0,.08)",
+    border: `1px solid ${colors.border}`,
     padding: 16,
     marginTop: 16,
   },
@@ -293,11 +304,11 @@ export default function App() {
     minHeight: 80,
     fontSize: 15,
   },
-  btn: {
+btn: {
     padding: "10px 14px",
     borderRadius: 12,
     border: "none",
-    background: "#5b7db1",
+    background: colors.accent,
     color: "#fff",
     fontWeight: 600,
     cursor: "pointer",
@@ -305,25 +316,25 @@ export default function App() {
   btnGhost: {
     padding: "10px 14px",
     borderRadius: 12,
-    border: "1px solid #ccc",
-    background: "#fff",
-    color: "#444",
+    border: `1px solid ${colors.border}`,
+    background: "transparent",
+    color: colors.text,
     cursor: "pointer",
   },
-  badge: {
-    background: "#e3edff",
+   badge: {
+    background: colors.badge,
     borderRadius: 999,
     padding: "2px 8px",
     fontSize: 12,
-    color: "#445",
+    color: prefersDark ? "#d0e0ff" : "#445",
   },
   chip: (active) => ({
     borderRadius: 999,
     padding: "2px 8px",
     fontSize: 12,
-    border: "1px solid #ccc",
-    background: active ? "#5b7db1" : "#f4f4f4",
-    color: active ? "#fff" : "#333",
+    border: `1px solid ${colors.border}`,
+    background: active ? colors.accent : prefersDark ? "#1f2a3a" : "#f4f4f4",
+    color: active ? "#fff" : colors.text,
   }),
   // ページ全体に追加
   page: { 

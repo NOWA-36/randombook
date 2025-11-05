@@ -18,7 +18,11 @@
   <meta property="og:image" content="https://my-book-randomizer-2025.netlify.app/og-image.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="google-site-verification" content="Q4n5uqqr3kRhDlz9RgwX2Cj8ozbtNi12rrzTKZFh2w0" />
-
+  <!-- テーマ自動切替対応 -->
+  <meta name="color-scheme" content="light dark">
+  <meta name="supported-color-schemes" content="light dark">
+  <meta name="theme-color" content="#faf8f1" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)">
   <!-- 構造化データ（JSON-LD：WebApplication）-->
   <script type="application/ld+json">
   {
@@ -36,6 +40,22 @@
   /* 余白リセット＆セーフエリア対応 */
   html, body, #root { height: 100%; margin: 0; padding: 0; }
   body { padding-top: env(safe-area-inset-top); }
+  :root { color-scheme: light dark; }
+  html, body, #root {
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+  }
+  body {
+    font-family: system-ui, sans-serif;
+    transition: background 0.3s, color 0.3s;
+  }
+  @media (prefers-color-scheme: light) {
+    body { background: #faf8f1; color: #222; }
+  }
+  @media (prefers-color-scheme: dark) {
+    body { background: #121212; color: #eaeaea; }
+  }
 </style>
 </head>
 <body>
