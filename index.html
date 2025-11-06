@@ -56,6 +56,21 @@
   @media (prefers-color-scheme: dark) {
     body { background: #121212; color: #eaeaea; }
   }
+    /* 見出し（本のタイトル）の改行をきれいにする */
+  .book-title {
+    font-weight: 700;
+    letter-spacing: .01em;
+    line-height: 1.35;
+  }
+  /* ブラウザが対応していれば “変な最終行/2文字行” を減らす */
+  @supports (text-wrap: pretty) {
+    .book-title { text-wrap: pretty; }
+  }
+  @supports (text-wrap: balance) {
+    .book-title { text-wrap: balance; }
+  }
+  /* 日本語の不自然な分割を減らす（過剰分割の抑止） */
+  .book-title { word-break: keep-all; }
 </style>
 </head>
 <body>

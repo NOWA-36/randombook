@@ -1,11 +1,14 @@
 const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
 const colors = {
-  bg: prefersDark ? "#121212" : "#faf8f1",
-  card: prefersDark ? "#1e1e1e" : "#fffaf5",
-  border: prefersDark ? "#333" : "#ddd",
-  text: prefersDark ? "#eaeaea" : "#222",
-  accent: prefersDark ? "#7bb0ff" : "#5b7db1",
-  badge: prefersDark ? "#2f3b55" : "#e3edff",
+  bg: prefersDark ? "#111315" : "#faf8f1",
+  card: prefersDark ? "#171a1c" : "#fffaf5",
+  border: prefersDark ? "#2a2f33" : "#d9dde2",
+  text: prefersDark ? "#e6e9ee" : "#1f2937",        // ベース文字
+  textStrong: prefersDark ? "#f9fafb" : "#111827",   // タイトルなど
+  muted: prefersDark ? "#a9b1bb" : "#475569",        // 補助テキスト
+  accent: prefersDark ? "#7bb0ff" : "#3b82f6",       // ボタン色 少し強め
+  badgeBg: prefersDark ? "#223047" : "#e8f0ff",
+  chipOff: prefersDark ? "#1b2229" : "#f3f4f6",
 };
 
 // App.jsx（購入/未購入フラグ & 抽選モード対応版）
@@ -276,72 +279,91 @@ export default function App() {
 
   // ざっくりCSS（依存なし）
   const styles = {
-   page: { minHeight: "100vh", background: colors.bg, color: colors.text, padding: "24px" },
+  page: {
+    minHeight: "100vh",
+    background: colors.bg,
+    color: colors.text,
+    padding: "clamp(16px, 4vw, 32px)",            // スマホで余白自動調整
+    WebkitTextSizeAdjust: "100%"                  // iOS の自動拡大抑止
+  },
   container: { maxWidth: 960, margin: "0 auto" },
   card: {
     background: colors.card,
     borderRadius: 16,
-    boxShadow: prefersDark ? "0 1px 4px rgba(255,255,255,.08)" : "0 1px 4px rgba(0,0,0,.08)",
     border: `1px solid ${colors.border}`,
-    padding: 16,
+    boxShadow: prefersDark
+      ? "0 1px 6px rgba(0,0,0,.4)"
+      : "0 1px 6px rgba(0,0,0,.08)",
+    padding: "clamp(12px, 2.8vw, 20px)",
     marginTop: 16,
   },
-  label: { fontSize: 12, fontWeight: 600, color: "#444" },
-  input: {
+  label: { fontSize: 12, fontWeight: 700, color: colors.muted },
+    input: {
     width: "100%",
-    padding: "10px 12px",
-    borderRadius: 8,
-    border: "1px solid #ccc",
-    background: "#fff",
-    fontSize: 15,
+    padding: "12px 14px",
+    borderRadius: 10,
+    border: `1px solid ${colors.border}`,
+    background: prefersDark ? "#0f1214" : "#fff",
+    color: colors.text,
+    fontSize: "clamp(15px, 3.8vw, 16px)"
   },
   textarea: {
     width: "100%",
-    padding: "10px 12px",
-    borderRadius: 8,
-    border: "1px solid #ccc",
-    background: "#fff",
-    minHeight: 80,
-    fontSize: 15,
+    padding: "12px 14px",
+    borderRadius: 10,
+    border: `1px solid ${colors.border}`,
+    background: prefersDark ? "#0f1214" : "#fff",
+    color: colors.text,
+    minHeight: 88,
+    fontSize: "clamp(15px, 3.8vw, 16px)"
   },
-btn: {
-    padding: "10px 14px",
+  btn: {
+    padding: "12px 16px",
     borderRadius: 12,
     border: "none",
     background: colors.accent,
     color: "#fff",
-    fontWeight: 600,
+    fontWeight: 700,
     cursor: "pointer",
+    fontSize: "clamp(15px, 3.8vw, 16px)"
   },
   btnGhost: {
-    padding: "10px 14px",
+    padding: "12px 16px",
     borderRadius: 12,
     border: `1px solid ${colors.border}`,
     background: "transparent",
     color: colors.text,
     cursor: "pointer",
+    fontSize: "clamp(15px, 3.8vw, 16px)"
   },
-   badge: {
-    background: colors.badge,
-    borderRadius: 999,
-    padding: "2px 8px",
-    fontSize: 12,
-    color: prefersDark ? "#d0e0ff" : "#445",
-  },
-  chip: (active) => ({
-    borderRadius: 999,
-    padding: "2px 8px",
-    fontSize: 12,
+  listItem: {
     border: `1px solid ${colors.border}`,
-    background: active ? colors.accent : prefersDark ? "#1f2a3a" : "#f4f4f4",
-    color: active ? "#fff" : colors.text,
-  }),
-  // ページ全体に追加
-  page: { 
-    minHeight: "100vh", 
-    background: "#faf8f1", 
-    padding: "clamp(16px, 4vw, 32px)", // スマホで自動調整
+    borderRadius: 12,
+    padding: "clamp(10px, 3vw, 14px)"
   },
+  badge: {
+    background: colors.badgeBg,
+    borderRadius: 999,
+    padding: "2px 8px",
+    fontSize: 12,
+    color: prefersDark ? "#d8e6ff" : "#1f3b6b"
+  },
+  // タイトルの見やすさ・サイズ調整（スマホで大きめ）
+  title: {
+    fontWeight: 800,
+    color: colors.textStrong,
+    fontSize: "clamp(18px, 5.2vw, 20px)",
+    lineHeight: 1.35
+  },
+  // サブテキスト
+  subtext: { color: colors.muted, fontSize: "clamp(12px, 3.4vw, 14px)" },
+  select: {
+    padding: "12px 14px",
+    borderRadius: 10,
+    border: `1px solid ${colors.border}`,
+    background: "transparent",
+    color: colors.text
+  }
 };
 
 
@@ -480,12 +502,18 @@ btn: {
                   <div style={{ display: "flex", gap: 8 }}>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                        <span style={{ fontWeight: 700 }}>{b.title}</span>
+                        <span className="book-title" style={styles.title}>{b.title}</span>
                         {b.author && <span style={styles.badge}>{b.author}</span>}
-                        <span style={styles.chip(b.purchased)}>
+                        <span style={{
+                          borderRadius: 999, padding: "2px 8px", fontSize: 12,
+                          border: `1px solid ${colors.border}`,
+                          background: b.purchased ? colors.accent : colors.chipOff,
+                          color: b.purchased ? "#fff" : colors.text
+                        }}>
                           {b.purchased ? "購入済み" : "未購入"}
                         </span>
                       </div>
+
                       {b.note && (
                         <p style={{ marginTop: 6, whiteSpace: "pre-wrap", color: "#334155" }}>
                           {b.note}
