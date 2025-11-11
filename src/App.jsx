@@ -23,6 +23,7 @@ function uid() {
 function migrate(b) {
   // 既存データに purchased がなければ false を入れる
   if (typeof b.purchased !== "boolean") b.purchased = false;
+  if (typeof b.read !== "boolean") b.read = false;  
   return b;
 }
 
@@ -32,9 +33,7 @@ function loadBooks() {
     if (!raw) return [];
     const parsed = JSON.parse(raw);
     return Array.isArray(parsed)
-      ? parsed
-          .filter((b) => b && typeof b.title === "string")
-          .map(migrate)
+      ? parsed.filter(b => b && typeof b.title === "string").map(migrate)
       : [];
   } catch {
     return [];
@@ -67,10 +66,14 @@ export default function App() {
   const [editId, setEditId] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const fileInputRef = useRef(null);
+  const [readInForm, setReadInForm] = useState(false);
 
   // 抽選モード: all/purchased/unpurchased
   const [drawMode, setDrawMode] = useState("all");
-
+  // 抽選モード（購入の対象）
+  const [drawPurchase, setDrawPurchase] = useState("all");     // all | purchased | unpurchased
+  // 抽選モード（既読の対象）
+  const [drawRead, setDrawRead] = useState("all");             // all | read | unread
   useEffect(() => {
     saveBooks(books);
   }, [books]);
@@ -87,13 +90,12 @@ export default function App() {
   }, [books, query]);
 
   const counts = useMemo(() => {
-    let purchased = 0,
-      unpurchased = 0;
+    let purchased = 0, unpurchased = 0, read = 0, unread = 0;
     for (const b of filtered) {
-      if (b.purchased) purchased++;
-      else unpurchased++;
+      b.purchased ? purchased++ : unpurchased++;
+      b.read ? read++ : unread++;
     }
-    return { purchased, unpurchased, total: filtered.length };
+    return { purchased, unpurchased, read, unread, total: filtered.length };
   }, [filtered]);
 
   function resetForm() {
@@ -103,6 +105,7 @@ export default function App() {
     setNote("");
     setPurchasedInForm(false);
     setEditId(null);
+    setReadInForm(false);     
   }
 
   function addOrUpdateBook(e) {
@@ -125,6 +128,7 @@ export default function App() {
                 url: normalizedUrl,
                 note: note.trim() || undefined,
                 purchased: !!purchasedInForm,
+                read: !!readInForm,   
               }
             : b
         )
@@ -139,6 +143,7 @@ export default function App() {
         note: note.trim() || undefined,
         createdAt: Date.now(),
         purchased: !!purchasedInForm,
+        read: false,                     
       };
       setBooks((prev) => [newBook, ...prev]);
       // alert("追加しました");
@@ -157,6 +162,7 @@ export default function App() {
     setNote(book.note || "");
     setPurchasedInForm(!!book.purchased);
     setEditId(book.id);
+    setReadInForm(!!book.read);            
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
@@ -165,26 +171,27 @@ export default function App() {
       prev.map((b) => (b.id === id ? { ...b, purchased: !b.purchased } : b))
     );
   }
+  function toggleRead(id) {
+  setBooks(prev => prev.map(b => (b.id === id ? { ...b, read: !b.read } : b)));
+}
 
   function pickRandom() {
-    // 検索結果(filtered)から、さらに抽選モードで絞る
     let pool = filtered;
-    if (drawMode === "purchased") pool = pool.filter((b) => b.purchased);
-    if (drawMode === "unpurchased") pool = pool.filter((b) => !b.purchased);
+
+    // 購入フィルタ
+    if (drawPurchase === "purchased") pool = pool.filter(b => b.purchased);
+    if (drawPurchase === "unpurchased") pool = pool.filter(b => !b.purchased);
+
+    // 既読フィルタ
+    if (drawRead === "read") pool = pool.filter(b => b.read);
+    if (drawRead === "unread") pool = pool.filter(b => !b.read);
 
     if (!pool.length) {
-      const msgByMode =
-        drawMode === "purchased"
-          ? "（検索条件内に）購入済みの本がありません"
-          : drawMode === "unpurchased"
-          ? "（検索条件内に）未購入の本がありません"
-          : "候補がありません";
-      alert(`${msgByMode}。条件を変えてください。`);
+      alert("条件に合致する候補がありません。条件を変更してください。");
       return;
     }
     const idx = Math.floor(Math.random() * pool.length);
-    const p = pool[idx];
-    setPicked(p);
+    setPicked(pool[idx]);
     setShowModal(true);
   }
 
@@ -226,6 +233,7 @@ export default function App() {
             note: b.note ? String(b.note) : undefined,
             createdAt: b.createdAt || Date.now(),
             purchased: typeof b.purchased === "boolean" ? b.purchased : false,
+            read: typeof b.read === "boolean" ? b.read : false,    
           }))
           .filter((b) => b.title);
 
@@ -444,6 +452,10 @@ export default function App() {
               />
               購入済みにする
             </label>
+            <label style={{ display: "inline-flex", gap: 8, alignItems: "center" }}>
+              <input type="checkbox" checked={readInForm} onChange={e => setReadInForm(e.target.checked)} />
+              既読にする
+            </label>
 
             <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
               <button type="submit" style={styles.btn}>
@@ -462,19 +474,17 @@ export default function App() {
                   placeholder="検索（タイトル・著者・メモ）"
                 />
                 {/* 抽選モードセレクト */}
-                <select
-                  value={drawMode}
-                  onChange={(e) => setDrawMode(e.target.value)}
-                  style={styles.select}
-                  title="ランダムの対象"
-                >
-                  <option value="all">両方（{counts.total}）</option>
-                  <option value="purchased">購入のみ（{counts.purchased}）</option>
-                  <option value="unpurchased">未購入のみ（{counts.unpurchased}）</option>
+                <select value={drawPurchase} onChange={e => setDrawPurchase(e.target.value)} style={styles.select} title="購入フィルタ">
+                  <option value="all">購入: 両方（{counts.total}）</option>
+                  <option value="purchased">購入: 購入のみ（{counts.purchased}）</option>
+                  <option value="unpurchased">購入: 未購入のみ（{counts.unpurchased}）</option>
                 </select>
-                <button type="button" style={styles.btn} onClick={pickRandom}>
-                  ランダム
-                </button>
+                <select value={drawRead} onChange={e => setDrawRead(e.target.value)} style={styles.select} title="既読フィルタ">
+                  <option value="all">既読: 両方（{counts.total}）</option>
+                  <option value="read">既読: 既読のみ（{counts.read}）</option>
+                  <option value="unread">既読: 未読のみ（{counts.unread}）</option>
+                </select>
+                <button type="button" style={styles.btn} onClick={pickRandom}>ランダム</button>
               </div>
             </div>
           </form>
@@ -512,6 +522,14 @@ export default function App() {
                         }}>
                           {b.purchased ? "購入済み" : "未購入"}
                         </span>
+                        <span style={{
+                          borderRadius: 999, padding: "2px 8px", fontSize: 12,
+                          border: `1px solid ${colors.border}`,
+                          background: b.read ? (prefersDark ? "#24553a" : "#d9f7e8") : colors.chipOff,
+                          color: b.read ? (prefersDark ? "#d6ffea" : "#0f5132") : colors.text,
+                        }}>
+                          {b.read ? "既読" : "未読"}
+                        </span>
                       </div>
 
                       {b.note && (
@@ -538,6 +556,10 @@ export default function App() {
                           onChange={() => togglePurchased(b.id)}
                         />
                         購入済み
+                      </label>
+                      <label style={{ display: "inline-flex", gap: 6, alignItems: "center" }}>
+                        <input type="checkbox" checksed={!!b.read} onChange={() => toggleRead(b.id)} />
+                        既読
                       </label>
                       <button style={styles.btnGhost} onClick={() => onEdit(b)}>
                         編集
